@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yumi-Art — Художник</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#F5F0EB',
+            sand: '#E8E0D8',
+            charcoal: '#2C2825',
+            warm: '#8B7E74',
+            accent: '#C4A882',
+            deep: '#1A1715',
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'serif'],
+            body: ['"Inter"', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: #F5F0EB; color: #2C2825; }
+
+    /* Grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 256px 256px;
+    }
+
+    /* Custom spring easing */
+    .spring { transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+    /* Fade in on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Gallery hover */
+    .gallery-item img {
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    }
+    .gallery-item:hover img {
+      transform: scale(1.03);
+    }
+    .gallery-item .overlay {
+      opacity: 1;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .gallery-item:hover .overlay {
+      transform: translateY(-4px);
+    }
+
+    /* Link underline animation */
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: #2C2825;
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-link:hover::after,
+    .nav-link:focus-visible::after {
+      width: 100%;
+    }
+
+    /* Button styles */
+    .btn-primary {
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(196, 168, 130, 0.25), 0 2px 8px rgba(196, 168, 130, 0.15);
+    }
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+    .btn-primary:focus-visible {
+      outline: 2px solid #C4A882;
+      outline-offset: 3px;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #F5F0EB; }
+    ::-webkit-scrollbar-thumb { background: #C4A882; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-cream/80 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 py-5 flex items-center justify-between">
+      <a href="#" class="font-display text-2xl md:text-3xl font-semibold tracking-tight text-charcoal" style="letter-spacing: -0.03em;">
+        Yumi<span class="text-accent">.</span>art
+      </a>
+      <div class="hidden md:flex items-center gap-10">
+        <a href="#works" class="nav-link font-body text-sm font-light tracking-wide text-warm hover:text-charcoal focus-visible:text-charcoal transition-colors duration-300">Работы</a>
+        <a href="#about" class="nav-link font-body text-sm font-light tracking-wide text-warm hover:text-charcoal focus-visible:text-charcoal transition-colors duration-300">Обо мне</a>
+        <a href="#contact" class="nav-link font-body text-sm font-light tracking-wide text-warm hover:text-charcoal focus-visible:text-charcoal transition-colors duration-300">Контакт</a>
+      </div>
+      <!-- Mobile menu button -->
+      <button id="menuBtn" class="md:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded" aria-label="Меню">
+        <span class="w-6 h-px bg-charcoal transition-transform duration-300 origin-center" id="bar1"></span>
+        <span class="w-6 h-px bg-charcoal transition-opacity duration-300" id="bar2"></span>
+        <span class="w-6 h-px bg-charcoal transition-transform duration-300 origin-center" id="bar3"></span>
+      </button>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="md:hidden overflow-hidden max-h-0 transition-all duration-500 ease-in-out bg-cream/95 backdrop-blur-md">
+      <div class="px-6 py-6 flex flex-col gap-6">
+        <a href="#works" class="font-body text-base font-light text-warm hover:text-charcoal" onclick="closeMenu()">Работы</a>
+        <a href="#about" class="font-body text-base font-light text-warm hover:text-charcoal" onclick="closeMenu()">Обо мне</a>
+        <a href="#contact" class="font-body text-base font-light text-warm hover:text-charcoal" onclick="closeMenu()">Контакт</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="min-h-screen flex items-center relative overflow-hidden">
+    <!-- Decorative gradient blobs -->
+    <div class="absolute top-1/4 -right-32 w-96 h-96 rounded-full opacity-20" style="background: radial-gradient(circle, #C4A882 0%, transparent 70%);"></div>
+    <div class="absolute bottom-1/4 -left-20 w-72 h-72 rounded-full opacity-15" style="background: radial-gradient(circle, #8B7E74 0%, transparent 70%);"></div>
+
+    <div class="max-w-7xl mx-auto px-6 md:px-12 pt-28 pb-16 md:pt-0 md:pb-0 w-full">
+      <div class="grid md:grid-cols-2 gap-12 md:gap-8 items-center">
+        <div class="reveal">
+          <p class="font-body text-xs font-medium tracking-[0.25em] uppercase text-accent mb-6">Современное искусство</p>
+          <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-semibold text-charcoal leading-[0.95]" style="letter-spacing: -0.03em;">
+            Искусство<br>
+            <span class="text-warm">в каждом</span><br>
+            штрихе
+          </h1>
+          <p class="font-body text-base font-light text-warm mt-8 max-w-md" style="line-height: 1.7;">
+            Создаю уникальные работы, в которых минимализм формы встречается с глубиной эмоций. Каждая картина — это история, рассказанная цветом и светом.
+          </p>
+          <div class="flex gap-4 mt-10">
+            <a href="#works" class="btn-primary inline-block bg-charcoal text-cream font-body text-sm font-medium px-8 py-3.5 rounded-full">
+              Смотреть работы
+            </a>
+            <a href="#contact" class="btn-primary inline-block border border-warm/30 text-charcoal font-body text-sm font-medium px-8 py-3.5 rounded-full hover:border-accent">
+              Связаться
+            </a>
+          </div>
+        </div>
+        <div class="reveal relative">
+          <div class="relative aspect-[3/4] rounded-2xl overflow-hidden" style="box-shadow: 0 24px 48px rgba(44, 40, 37, 0.08), 0 8px 16px rgba(44, 40, 37, 0.04);">
+            <img src="https://placehold.co/600x800/E8E0D8/8B7E74?text=Featured+Art" alt="Главная работа" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/40 via-transparent to-transparent"></div>
+            <div class="absolute inset-0 bg-accent/10 mix-blend-multiply"></div>
+          </div>
+          <div class="absolute -bottom-4 -left-4 w-24 h-24 border border-accent/20 rounded-xl"></div>
+          <div class="absolute -top-4 -right-4 w-16 h-16 border border-warm/15 rounded-full"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
+      <span class="font-body text-[10px] tracking-[0.2em] uppercase text-warm">Scroll</span>
+      <div class="w-px h-8 bg-warm/40"></div>
+    </div>
+  </section>
+
+  <!-- Works -->
+  <section id="works" class="py-24 md:py-32">
+    <div class="max-w-7xl mx-auto px-6 md:px-12">
+      <div class="reveal mb-16 md:mb-20">
+        <p class="font-body text-xs font-medium tracking-[0.25em] uppercase text-accent mb-4">Портфолио</p>
+        <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-semibold text-charcoal" style="letter-spacing: -0.03em;">Избранные работы</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <!-- Work 1 — large -->
+        <div class="reveal gallery-item group cursor-pointer md:row-span-2 relative rounded-2xl overflow-hidden" style="box-shadow: 0 16px 40px rgba(44,40,37,0.06), 0 4px 12px rgba(44,40,37,0.03);">
+          <div class="aspect-[3/4] md:aspect-auto md:h-full">
+            <img src="https://placehold.co/700x900/E8E0D8/8B7E74?text=Artwork+I" alt="Работа 1" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/50 via-transparent to-transparent"></div>
+            <div class="absolute inset-0 bg-accent/8 mix-blend-multiply"></div>
+          </div>
+          <div class="overlay absolute bottom-0 left-0 right-0 p-6 md:p-8">
+            <p class="font-body text-xs tracking-[0.15em] uppercase text-cream/70 mb-1">2024 · Холст, масло</p>
+            <h3 class="font-display text-2xl md:text-3xl text-cream font-medium">Тишина утра</h3>
+          </div>
+        </div>
+
+        <!-- Work 2 -->
+        <div class="reveal gallery-item group cursor-pointer relative rounded-2xl overflow-hidden" style="box-shadow: 0 16px 40px rgba(44,40,37,0.06), 0 4px 12px rgba(44,40,37,0.03);">
+          <div class="aspect-[4/3]">
+            <img src="https://placehold.co/700x525/D8CFC6/8B7E74?text=Artwork+II" alt="Работа 2" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/50 via-transparent to-transparent"></div>
+            <div class="absolute inset-0 bg-accent/8 mix-blend-multiply"></div>
+          </div>
+          <div class="overlay absolute bottom-0 left-0 right-0 p-6">
+            <p class="font-body text-xs tracking-[0.15em] uppercase text-cream/70 mb-1">2024 · Акварель</p>
+            <h3 class="font-display text-xl md:text-2xl text-cream font-medium">Свет сквозь листву</h3>
+          </div>
+        </div>
+
+        <!-- Work 3 -->
+        <div class="reveal gallery-item group cursor-pointer relative rounded-2xl overflow-hidden" style="box-shadow: 0 16px 40px rgba(44,40,37,0.06), 0 4px 12px rgba(44,40,37,0.03);">
+          <div class="aspect-[4/3]">
+            <img src="https://placehold.co/700x525/CEC5BB/8B7E74?text=Artwork+III" alt="Работа 3" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/50 via-transparent to-transparent"></div>
+            <div class="absolute inset-0 bg-accent/8 mix-blend-multiply"></div>
+          </div>
+          <div class="overlay absolute bottom-0 left-0 right-0 p-6">
+            <p class="font-body text-xs tracking-[0.15em] uppercase text-cream/70 mb-1">2023 · Графика</p>
+            <h3 class="font-display text-xl md:text-2xl text-cream font-medium">Линии покоя</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- More works row -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 mt-6 md:mt-8">
+        <div class="reveal gallery-item group cursor-pointer relative rounded-2xl overflow-hidden" style="box-shadow: 0 16px 40px rgba(44,40,37,0.06), 0 4px 12px rgba(44,40,37,0.03);">
+          <div class="aspect-square">
+            <img src="https://placehold.co/500x500/E0D6CC/8B7E74?text=IV" alt="Работа 4" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/50 via-transparent to-transparent"></div>
+            <div class="absolute inset-0 bg-accent/8 mix-blend-multiply"></div>
+          </div>
+          <div class="overlay absolute bottom-0 left-0 right-0 p-5">
+            <h3 class="font-display text-lg text-cream font-medium">Эхо</h3>
+          </div>
+        </div>
+        <div class="reveal gallery-item group cursor-pointer relative rounded-2xl overflow-hidden" style="box-shadow: 0 16px 40px rgba(44,40,37,0.06), 0 4px 12px rgba(44,40,37,0.03);">
+          <div class="aspect-square">
+            <img src="https://placehold.co/500x500/D5CCC2/8B7E74?text=V" alt="Работа 5" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/50 via-transparent to-transparent"></div>
+            <div class="absolute inset-0 bg-accent/8 mix-blend-multiply"></div>
+          </div>
+          <div class="overlay absolute bottom-0 left-0 right-0 p-5">
+            <h3 class="font-display text-lg text-cream font-medium">Форма тени</h3>
+          </div>
+        </div>
+        <div class="reveal gallery-item group cursor-pointer relative rounded-2xl overflow-hidden" style="box-shadow: 0 16px 40px rgba(44,40,37,0.06), 0 4px 12px rgba(44,40,37,0.03);">
+          <div class="aspect-square">
+            <img src="https://placehold.co/500x500/CBC2B8/8B7E74?text=VI" alt="Работа 6" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/50 via-transparent to-transparent"></div>
+            <div class="absolute inset-0 bg-accent/8 mix-blend-multiply"></div>
+          </div>
+          <div class="overlay absolute bottom-0 left-0 right-0 p-5">
+            <h3 class="font-display text-lg text-cream font-medium">Пространство</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="py-24 md:py-32 bg-sand/40">
+    <div class="max-w-7xl mx-auto px-6 md:px-12">
+      <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+        <div class="reveal relative order-2 md:order-1">
+          <div class="aspect-[4/5] rounded-2xl overflow-hidden" style="box-shadow: 0 24px 48px rgba(44, 40, 37, 0.08), 0 8px 16px rgba(44, 40, 37, 0.04);">
+            <img src="https://placehold.co/600x750/E8E0D8/8B7E74?text=Artist+Portrait" alt="Yumi — портрет художника" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/30 via-transparent to-transparent"></div>
+            <div class="absolute inset-0 bg-accent/5 mix-blend-multiply"></div>
+          </div>
+        </div>
+        <div class="reveal order-1 md:order-2">
+          <p class="font-body text-xs font-medium tracking-[0.25em] uppercase text-accent mb-4">Обо мне</p>
+          <h2 class="font-display text-4xl md:text-5xl font-semibold text-charcoal mb-8" style="letter-spacing: -0.03em;">
+            Каждая работа —<br>это диалог
+          </h2>
+          <div class="space-y-5">
+            <p class="font-body text-base font-light text-warm" style="line-height: 1.7;">
+              Меня зовут Юми. Я художник, работающий на пересечении классической живописи и современного минимализма. Мои работы исследуют тишину, свет и пространство между вещами.
+            </p>
+            <p class="font-body text-base font-light text-warm" style="line-height: 1.7;">
+              За последние 10 лет мои работы были представлены в галереях Москвы, Токио и Берлина. Я верю, что настоящее искусство не кричит — оно шепчет.
+            </p>
+          </div>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-3 gap-8 mt-12 pt-10 border-t border-warm/15">
+            <div>
+              <p class="font-display text-3xl md:text-4xl font-semibold text-charcoal" style="letter-spacing: -0.03em;">10+</p>
+              <p class="font-body text-xs tracking-wide text-warm mt-1">лет опыта</p>
+            </div>
+            <div>
+              <p class="font-display text-3xl md:text-4xl font-semibold text-charcoal" style="letter-spacing: -0.03em;">200+</p>
+              <p class="font-body text-xs tracking-wide text-warm mt-1">работ</p>
+            </div>
+            <div>
+              <p class="font-display text-3xl md:text-4xl font-semibold text-charcoal" style="letter-spacing: -0.03em;">15</p>
+              <p class="font-body text-xs tracking-wide text-warm mt-1">выставок</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="py-24 md:py-32">
+    <div class="max-w-3xl mx-auto px-6 md:px-12 text-center">
+      <div class="reveal">
+        <p class="font-body text-xs font-medium tracking-[0.25em] uppercase text-accent mb-4">Контакт</p>
+        <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-semibold text-charcoal mb-6" style="letter-spacing: -0.03em;">
+          Давайте создадим<br>что-то вместе
+        </h2>
+        <p class="font-body text-base font-light text-warm max-w-lg mx-auto mb-10" style="line-height: 1.7;">
+          Открыта для сотрудничества, заказов и выставочных проектов. Напишите мне, и я отвечу в течение дня.
+        </p>
+        <a href="mailto:hello@yumi-art.com" class="btn-primary inline-block bg-charcoal text-cream font-body text-sm font-medium px-10 py-4 rounded-full">
+          hello@yumi-art.com
+        </a>
+
+        <!-- Social links -->
+        <div class="flex items-center justify-center gap-8 mt-14">
+          <a href="#" class="font-body text-sm font-light text-warm hover:text-charcoal focus-visible:text-charcoal transition-colors duration-300 nav-link" aria-label="Instagram">Instagram</a>
+          <span class="w-1 h-1 rounded-full bg-warm/30"></span>
+          <a href="#" class="font-body text-sm font-light text-warm hover:text-charcoal focus-visible:text-charcoal transition-colors duration-300 nav-link" aria-label="Telegram">Telegram</a>
+          <span class="w-1 h-1 rounded-full bg-warm/30"></span>
+          <a href="#" class="font-body text-sm font-light text-warm hover:text-charcoal focus-visible:text-charcoal transition-colors duration-300 nav-link" aria-label="Behance">Behance</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-8 border-t border-warm/10">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <a href="#" class="font-display text-xl font-semibold text-charcoal" style="letter-spacing: -0.03em;">Yumi<span class="text-accent">.</span>art</a>
+      <p class="font-body text-xs font-light text-warm/60">&copy; 2024 Yumi-Art. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => observer.observe(el));
+
+    // Mobile menu
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const bar1 = document.getElementById('bar1');
+    const bar2 = document.getElementById('bar2');
+    const bar3 = document.getElementById('bar3');
+    let menuOpen = false;
+
+    menuBtn.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      if (menuOpen) {
+        mobileMenu.style.maxHeight = '250px';
+        bar1.style.transform = 'rotate(45deg) translate(3px, 3px)';
+        bar2.style.opacity = '0';
+        bar3.style.transform = 'rotate(-45deg) translate(3px, -3px)';
+      } else {
+        closeMenu();
+      }
+    });
+
+    function closeMenu() {
+      menuOpen = false;
+      mobileMenu.style.maxHeight = '0px';
+      bar1.style.transform = '';
+      bar2.style.opacity = '1';
+      bar3.style.transform = '';
+    }
+  </script>
+</body>
+</html>
