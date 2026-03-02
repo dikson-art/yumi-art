@@ -3,26 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Yumi-Art — Художник</title>
+  <title>Дмитрий Остапчук (Dikson) — Художник</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            cream: '#F5F0EB',
-            sand: '#E8E0D8',
-            charcoal: '#2C2825',
-            warm: '#8B7E74',
-            accent: '#C4A882',
-            deep: '#1A1715',
+            ivory: '#F2EDE8',
+            parchment: '#E6DFD6',
+            umber: '#3D2E1F',
+            sienna: '#8B5E3C',
+            ochre: '#C6943D',
+            smoke: '#6B6259',
+            deep: '#1C1612',
+            canvas: '#FAF7F3',
           },
           fontFamily: {
-            display: ['"Cormorant Garamond"', 'serif'],
-            body: ['"Inter"', 'sans-serif'],
+            display: ['"Playfair Display"', 'serif'],
+            body: ['"Raleway"', 'sans-serif'],
           },
         }
       }
@@ -31,46 +33,34 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; background: #F5F0EB; color: #2C2825; }
+    body { font-family: 'Raleway', sans-serif; background: #1C1612; color: #F2EDE8; }
 
-    /* Grain overlay */
+    /* Grain texture */
     body::after {
       content: '';
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 9999;
-      opacity: 0.03;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
       background-repeat: repeat;
       background-size: 256px 256px;
     }
 
-    /* Custom spring easing */
-    .spring { transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
-
-    /* Scroll reveal animations — only transform + opacity */
+    /* Scroll reveals */
     .reveal, .reveal-left, .reveal-right, .reveal-scale {
       opacity: 0;
       will-change: transform, opacity;
     }
-    .reveal {
-      transform: translateY(32px);
-    }
-    .reveal-left {
-      transform: translateX(-40px);
-    }
-    .reveal-right {
-      transform: translateX(40px);
-    }
-    .reveal-scale {
-      transform: scale(0.92);
-    }
+    .reveal { transform: translateY(32px); }
+    .reveal-left { transform: translateX(-40px); }
+    .reveal-right { transform: translateX(40px); }
+    .reveal-scale { transform: scale(0.92); }
     .reveal.visible, .reveal-left.visible, .reveal-right.visible, .reveal-scale.visible {
       opacity: 1;
       transform: translateY(0) translateX(0) scale(1);
     }
-    /* Transition durations — base + per-type overrides */
     .reveal, .reveal-left, .reveal-right {
       transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -78,17 +68,15 @@
       transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Horizontal line draw-in */
+    /* Line draw */
     .reveal-line {
       transform: scaleX(0);
       transform-origin: left;
-      transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .reveal-line.visible {
-      transform: scaleX(1);
-    }
+    .reveal-line.visible { transform: scaleX(1); }
 
-    /* Stagger support via data-delay */
+    /* Stagger delays */
     [data-delay="1"] { transition-delay: 0.1s !important; }
     [data-delay="2"] { transition-delay: 0.2s !important; }
     [data-delay="3"] { transition-delay: 0.3s !important; }
@@ -98,22 +86,22 @@
     [data-delay="7"] { transition-delay: 0.7s !important; }
     [data-delay="8"] { transition-delay: 0.8s !important; }
 
-    /* Gallery hover */
-    .gallery-item img {
-      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    /* Gallery */
+    .gallery-card img {
+      transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .gallery-item:hover img {
-      transform: scale(1.03);
+    .gallery-card:hover img {
+      transform: scale(1.04);
     }
-    .gallery-item .overlay {
+    .gallery-card .card-overlay {
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .gallery-card:hover .card-overlay {
       opacity: 1;
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .gallery-item:hover .overlay {
-      transform: translateY(-4px);
     }
 
-    /* Link underline animation */
+    /* Nav link */
     .nav-link {
       position: relative;
     }
@@ -124,7 +112,7 @@
       left: 0;
       width: 0;
       height: 1px;
-      background: #2C2825;
+      background: #C6943D;
       transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .nav-link:hover::after,
@@ -132,184 +120,239 @@
       width: 100%;
     }
 
-    /* Button styles */
-    .btn-primary {
+    /* Button */
+    .btn {
       transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
     }
-    .btn-primary:hover {
+    .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(196, 168, 130, 0.25), 0 2px 8px rgba(196, 168, 130, 0.15);
+      box-shadow: 0 8px 24px rgba(198, 148, 61, 0.2), 0 2px 8px rgba(198, 148, 61, 0.1);
     }
-    .btn-primary:active {
-      transform: translateY(0);
-    }
-    .btn-primary:focus-visible {
-      outline: 2px solid #C4A882;
-      outline-offset: 3px;
+    .btn:active { transform: translateY(0); }
+    .btn:focus-visible { outline: 2px solid #C6943D; outline-offset: 3px; }
+
+    /* Quote decoration */
+    .quote-mark {
+      font-size: 8rem;
+      line-height: 0;
+      opacity: 0.08;
+      font-family: 'Playfair Display', serif;
     }
 
     /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #F5F0EB; }
-    ::-webkit-scrollbar-thumb { background: #C4A882; border-radius: 3px; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #1C1612; }
+    ::-webkit-scrollbar-thumb { background: #8B5E3C; border-radius: 3px; }
+
+    /* Parallax blob */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(80px);
+    }
   </style>
 </head>
 <body>
 
   <!-- Navigation -->
-  <nav class="fixed top-0 left-0 right-0 z-50 bg-cream/80 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-6 md:px-12 py-5 flex items-center justify-between">
-      <a href="#" class="font-display text-2xl md:text-3xl font-semibold tracking-tight text-charcoal" style="letter-spacing: -0.03em;">
-        Yumi<span class="text-accent">.</span>art
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-deep/80 backdrop-blur-md border-b border-ivory/5">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
+      <a href="#" class="font-display text-xl md:text-2xl font-semibold text-ivory" style="letter-spacing: -0.02em;">
+        <span class="text-ochre">D</span>ikson
       </a>
       <div class="hidden md:flex items-center gap-10">
-        <a href="#works" class="nav-link font-body text-sm font-light tracking-wide text-warm hover:text-charcoal focus-visible:text-charcoal transition-colors duration-300">Работы</a>
-        <a href="#about" class="nav-link font-body text-sm font-light tracking-wide text-warm hover:text-charcoal focus-visible:text-charcoal transition-colors duration-300">Обо мне</a>
-        <a href="#contact" class="nav-link font-body text-sm font-light tracking-wide text-warm hover:text-charcoal focus-visible:text-charcoal transition-colors duration-300">Контакт</a>
+        <a href="#works" class="nav-link font-body text-sm font-light tracking-wider text-ivory/60 hover:text-ivory focus-visible:text-ivory">Работы</a>
+        <a href="#about" class="nav-link font-body text-sm font-light tracking-wider text-ivory/60 hover:text-ivory focus-visible:text-ivory">Обо мне</a>
+        <a href="#exhibitions" class="nav-link font-body text-sm font-light tracking-wider text-ivory/60 hover:text-ivory focus-visible:text-ivory">Выставки</a>
+        <a href="#contact" class="nav-link font-body text-sm font-light tracking-wider text-ivory/60 hover:text-ivory focus-visible:text-ivory">Контакт</a>
       </div>
-      <!-- Mobile menu button -->
-      <button id="menuBtn" class="md:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded" aria-label="Меню">
-        <span class="w-6 h-px bg-charcoal transition-transform duration-300 origin-center" id="bar1"></span>
-        <span class="w-6 h-px bg-charcoal transition-opacity duration-300" id="bar2"></span>
-        <span class="w-6 h-px bg-charcoal transition-transform duration-300 origin-center" id="bar3"></span>
+      <button id="menuBtn" class="md:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ochre rounded" aria-label="Меню">
+        <span class="w-5 h-px bg-ivory transition-transform duration-300 origin-center" id="bar1"></span>
+        <span class="w-5 h-px bg-ivory transition-opacity duration-300" id="bar2"></span>
+        <span class="w-5 h-px bg-ivory transition-transform duration-300 origin-center" id="bar3"></span>
       </button>
     </div>
-    <!-- Mobile menu -->
-    <div id="mobileMenu" class="md:hidden overflow-hidden max-h-0 transition-all duration-500 ease-in-out bg-cream/95 backdrop-blur-md">
-      <div class="px-6 py-6 flex flex-col gap-6">
-        <a href="#works" class="font-body text-base font-light text-warm hover:text-charcoal" onclick="closeMenu()">Работы</a>
-        <a href="#about" class="font-body text-base font-light text-warm hover:text-charcoal" onclick="closeMenu()">Обо мне</a>
-        <a href="#contact" class="font-body text-base font-light text-warm hover:text-charcoal" onclick="closeMenu()">Контакт</a>
+    <div id="mobileMenu" class="md:hidden overflow-hidden max-h-0 transition-all duration-500 ease-in-out bg-deep/95 backdrop-blur-md">
+      <div class="px-6 py-6 flex flex-col gap-5">
+        <a href="#works" class="font-body text-base font-light text-ivory/60 hover:text-ivory" onclick="closeMenu()">Работы</a>
+        <a href="#about" class="font-body text-base font-light text-ivory/60 hover:text-ivory" onclick="closeMenu()">Обо мне</a>
+        <a href="#exhibitions" class="font-body text-base font-light text-ivory/60 hover:text-ivory" onclick="closeMenu()">Выставки</a>
+        <a href="#contact" class="font-body text-base font-light text-ivory/60 hover:text-ivory" onclick="closeMenu()">Контакт</a>
       </div>
     </div>
   </nav>
 
   <!-- Hero -->
   <section class="min-h-screen flex items-center relative overflow-hidden">
-    <!-- Decorative gradient blobs -->
-    <div class="absolute top-1/4 -right-32 w-96 h-96 rounded-full opacity-20" style="background: radial-gradient(circle, #C4A882 0%, transparent 70%);"></div>
-    <div class="absolute bottom-1/4 -left-20 w-72 h-72 rounded-full opacity-15" style="background: radial-gradient(circle, #8B7E74 0%, transparent 70%);"></div>
+    <!-- Ambient blobs -->
+    <div class="blob w-[500px] h-[500px] top-1/4 -right-40 opacity-10" style="background: radial-gradient(circle, #C6943D 0%, transparent 70%);"></div>
+    <div class="blob w-[350px] h-[350px] bottom-1/3 -left-24 opacity-8" style="background: radial-gradient(circle, #8B5E3C 0%, transparent 70%);"></div>
 
     <div class="max-w-7xl mx-auto px-6 md:px-12 pt-28 pb-16 md:pt-0 md:pb-0 w-full">
-      <div class="grid md:grid-cols-2 gap-12 md:gap-8 items-center">
+      <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
         <div>
-          <p class="reveal font-body text-xs font-medium tracking-[0.25em] uppercase text-accent mb-6" data-delay="1">Современное искусство</p>
-          <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-semibold text-charcoal leading-[0.95]" style="letter-spacing: -0.03em;">
-            <span class="reveal inline-block" data-delay="2">Искусство</span><br>
-            <span class="reveal-left inline-block text-warm" data-delay="3">в каждом</span><br>
-            <span class="reveal inline-block" data-delay="4">штрихе</span>
+          <p class="reveal font-body text-xs font-medium tracking-[0.3em] uppercase text-ochre mb-6" data-delay="1">Художник · Живописец</p>
+          <h1 class="font-display font-bold leading-[0.92]" style="letter-spacing: -0.03em;">
+            <span class="reveal inline-block text-5xl sm:text-6xl lg:text-7xl xl:text-8xl text-ivory" data-delay="2">Дмитрий</span><br>
+            <span class="reveal-left inline-block text-5xl sm:text-6xl lg:text-7xl xl:text-8xl text-ochre" data-delay="3">Остапчук</span>
           </h1>
-          <p class="reveal font-body text-base font-light text-warm mt-8 max-w-md" data-delay="5" style="line-height: 1.7;">
-            Создаю уникальные работы, в которых минимализм формы встречается с глубиной эмоций. Каждая картина — это история, рассказанная цветом и светом.
+          <div class="reveal-line h-px bg-ochre/30 my-8 max-w-[200px]" data-delay="4"></div>
+          <p class="reveal font-display text-lg md:text-xl italic text-ivory/50 max-w-md" data-delay="4" style="line-height: 1.6;">
+            «Искусство — это путь от сердца к сердцу»
+          </p>
+          <p class="reveal font-body text-sm font-light text-smoke mt-4 max-w-md" data-delay="5" style="line-height: 1.7;">
+            Масло, акварель, графика. Персональные и групповые выставки в Беларуси и России. Работы в частных коллекциях.
           </p>
           <div class="reveal flex gap-4 mt-10" data-delay="6">
-            <a href="#works" class="btn-primary inline-block bg-charcoal text-cream font-body text-sm font-medium px-8 py-3.5 rounded-full">
+            <a href="#works" class="btn inline-block bg-ochre text-deep font-body text-sm font-semibold px-8 py-3.5 rounded-full">
               Смотреть работы
             </a>
-            <a href="#contact" class="btn-primary inline-block border border-warm/30 text-charcoal font-body text-sm font-medium px-8 py-3.5 rounded-full hover:border-accent">
+            <a href="#contact" class="btn inline-block border border-ivory/15 text-ivory font-body text-sm font-medium px-8 py-3.5 rounded-full hover:border-ochre/50">
               Связаться
             </a>
           </div>
         </div>
         <div class="reveal-right relative" data-delay="3">
-          <div class="relative aspect-[3/4] rounded-2xl overflow-hidden" style="box-shadow: 0 24px 48px rgba(44, 40, 37, 0.08), 0 8px 16px rgba(44, 40, 37, 0.04);">
-            <img src="https://placehold.co/600x800/E8E0D8/8B7E74?text=Featured+Art" alt="Главная работа" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-deep/40 via-transparent to-transparent"></div>
-            <div class="absolute inset-0 bg-accent/10 mix-blend-multiply"></div>
+          <div class="relative aspect-[3/4] rounded-xl overflow-hidden" style="box-shadow: 0 32px 64px rgba(0,0,0,0.4), 0 8px 20px rgba(0,0,0,0.2);">
+            <img src="https://placehold.co/600x800/3D2E1F/8B5E3C?text=Странники" alt="Странники — главная работа" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/60 via-transparent to-transparent"></div>
+            <div class="absolute inset-0 bg-sienna/10 mix-blend-multiply"></div>
+            <div class="absolute bottom-6 left-6 right-6">
+              <p class="font-body text-[10px] tracking-[0.2em] uppercase text-ivory/50">Холст, масло</p>
+              <p class="font-display text-xl text-ivory font-medium mt-1">Странники</p>
+            </div>
           </div>
-          <div class="absolute -bottom-4 -left-4 w-24 h-24 border border-accent/20 rounded-xl"></div>
-          <div class="absolute -top-4 -right-4 w-16 h-16 border border-warm/15 rounded-full"></div>
+          <!-- Frame accents -->
+          <div class="absolute -top-3 -left-3 w-12 h-12 border-t border-l border-ochre/25"></div>
+          <div class="absolute -bottom-3 -right-3 w-12 h-12 border-b border-r border-ochre/25"></div>
         </div>
       </div>
     </div>
 
-    <!-- Scroll indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
-      <span class="font-body text-[10px] tracking-[0.2em] uppercase text-warm">Scroll</span>
-      <div class="w-px h-8 bg-warm/40"></div>
+    <!-- Scroll hint -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
+      <span class="font-body text-[9px] tracking-[0.25em] uppercase text-ivory/50">Scroll</span>
+      <div class="w-px h-10 bg-gradient-to-b from-ochre/40 to-transparent"></div>
     </div>
   </section>
 
   <!-- Works -->
-  <section id="works" class="py-24 md:py-32">
+  <section id="works" class="py-24 md:py-32 bg-deep">
     <div class="max-w-7xl mx-auto px-6 md:px-12">
       <div class="mb-16 md:mb-20">
-        <p class="reveal font-body text-xs font-medium tracking-[0.25em] uppercase text-accent mb-4">Портфолио</p>
-        <h2 class="reveal font-display text-4xl md:text-5xl lg:text-6xl font-semibold text-charcoal" data-delay="1" style="letter-spacing: -0.03em;">Избранные работы</h2>
-        <div class="reveal-line h-px bg-warm/20 mt-6"></div>
+        <p class="reveal font-body text-xs font-medium tracking-[0.3em] uppercase text-ochre mb-4">Портфолио</p>
+        <h2 class="reveal font-display text-4xl md:text-5xl lg:text-6xl font-bold text-ivory" data-delay="1" style="letter-spacing: -0.03em;">Избранные работы</h2>
+        <div class="reveal-line h-px bg-ivory/10 mt-6" data-delay="2"></div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-        <!-- Work 1 — large -->
-        <div class="reveal-scale gallery-item group cursor-pointer md:row-span-2 relative rounded-2xl overflow-hidden" data-delay="1" style="box-shadow: 0 16px 40px rgba(44,40,37,0.06), 0 4px 12px rgba(44,40,37,0.03);">
-          <div class="aspect-[3/4] md:aspect-auto md:h-full">
-            <img src="https://placehold.co/700x900/E8E0D8/8B7E74?text=Artwork+I" alt="Работа 1" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-deep/50 via-transparent to-transparent"></div>
-            <div class="absolute inset-0 bg-accent/8 mix-blend-multiply"></div>
+      <!-- Gallery grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <!-- Row 1 -->
+        <div class="reveal-scale gallery-card group cursor-pointer md:col-span-2 relative rounded-xl overflow-hidden" data-delay="1" style="box-shadow: 0 16px 48px rgba(0,0,0,0.3);">
+          <div class="aspect-[16/10]">
+            <img src="https://placehold.co/900x560/3D2E1F/6B6259?text=Путь+к+себе" alt="Путь к себе" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/70 via-deep/10 to-transparent"></div>
+            <div class="absolute inset-0 bg-sienna/8 mix-blend-multiply"></div>
           </div>
-          <div class="overlay absolute bottom-0 left-0 right-0 p-6 md:p-8">
-            <p class="font-body text-xs tracking-[0.15em] uppercase text-cream/70 mb-1">2024 · Холст, масло</p>
-            <h3 class="font-display text-2xl md:text-3xl text-cream font-medium">Тишина утра</h3>
+          <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+            <p class="font-body text-[10px] tracking-[0.2em] uppercase text-ivory/40 mb-1">2023 · Холст, масло · 90×120 см</p>
+            <h3 class="font-display text-2xl md:text-3xl text-ivory font-medium">Путь к себе</h3>
           </div>
+          <div class="card-overlay absolute inset-0 bg-ochre/5 pointer-events-none"></div>
+        </div>
+        <div class="reveal-scale gallery-card group cursor-pointer relative rounded-xl overflow-hidden" data-delay="2" style="box-shadow: 0 16px 48px rgba(0,0,0,0.3);">
+          <div class="aspect-[3/4]">
+            <img src="https://placehold.co/450x600/2C1E14/6B6259?text=Тишина" alt="Тишина" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/70 via-deep/10 to-transparent"></div>
+            <div class="absolute inset-0 bg-sienna/8 mix-blend-multiply"></div>
+          </div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <p class="font-body text-[10px] tracking-[0.2em] uppercase text-ivory/40 mb-1">2022 · Холст, масло</p>
+            <h3 class="font-display text-xl text-ivory font-medium">Тишина</h3>
+          </div>
+          <div class="card-overlay absolute inset-0 bg-ochre/5 pointer-events-none"></div>
         </div>
 
-        <!-- Work 2 -->
-        <div class="reveal-scale gallery-item group cursor-pointer relative rounded-2xl overflow-hidden" data-delay="2" style="box-shadow: 0 16px 40px rgba(44,40,37,0.06), 0 4px 12px rgba(44,40,37,0.03);">
-          <div class="aspect-[4/3]">
-            <img src="https://placehold.co/700x525/D8CFC6/8B7E74?text=Artwork+II" alt="Работа 2" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-deep/50 via-transparent to-transparent"></div>
-            <div class="absolute inset-0 bg-accent/8 mix-blend-multiply"></div>
+        <!-- Row 2 -->
+        <div class="reveal-scale gallery-card group cursor-pointer relative rounded-xl overflow-hidden" data-delay="3" style="box-shadow: 0 16px 48px rgba(0,0,0,0.3);">
+          <div class="aspect-[3/4]">
+            <img src="https://placehold.co/450x600/352618/6B6259?text=Рассвет" alt="Рассвет" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/70 via-deep/10 to-transparent"></div>
+            <div class="absolute inset-0 bg-sienna/8 mix-blend-multiply"></div>
           </div>
-          <div class="overlay absolute bottom-0 left-0 right-0 p-6">
-            <p class="font-body text-xs tracking-[0.15em] uppercase text-cream/70 mb-1">2024 · Акварель</p>
-            <h3 class="font-display text-xl md:text-2xl text-cream font-medium">Свет сквозь листву</h3>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <p class="font-body text-[10px] tracking-[0.2em] uppercase text-ivory/40 mb-1">2021 · Акварель</p>
+            <h3 class="font-display text-xl text-ivory font-medium">Рассвет</h3>
           </div>
+          <div class="card-overlay absolute inset-0 bg-ochre/5 pointer-events-none"></div>
         </div>
-
-        <!-- Work 3 -->
-        <div class="reveal-scale gallery-item group cursor-pointer relative rounded-2xl overflow-hidden" data-delay="4" style="box-shadow: 0 16px 40px rgba(44,40,37,0.06), 0 4px 12px rgba(44,40,37,0.03);">
+        <div class="reveal-scale gallery-card group cursor-pointer relative rounded-xl overflow-hidden" data-delay="4" style="box-shadow: 0 16px 48px rgba(0,0,0,0.3);">
           <div class="aspect-[4/3]">
-            <img src="https://placehold.co/700x525/CEC5BB/8B7E74?text=Artwork+III" alt="Работа 3" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-deep/50 via-transparent to-transparent"></div>
-            <div class="absolute inset-0 bg-accent/8 mix-blend-multiply"></div>
+            <img src="https://placehold.co/600x450/2A1D12/6B6259?text=Странник+II" alt="Странник II" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/70 via-deep/10 to-transparent"></div>
+            <div class="absolute inset-0 bg-sienna/8 mix-blend-multiply"></div>
           </div>
-          <div class="overlay absolute bottom-0 left-0 right-0 p-6">
-            <p class="font-body text-xs tracking-[0.15em] uppercase text-cream/70 mb-1">2023 · Графика</p>
-            <h3 class="font-display text-xl md:text-2xl text-cream font-medium">Линии покоя</h3>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <p class="font-body text-[10px] tracking-[0.2em] uppercase text-ivory/40 mb-1">2017 · Холст, масло</p>
+            <h3 class="font-display text-xl text-ivory font-medium">Странник II</h3>
           </div>
+          <div class="card-overlay absolute inset-0 bg-ochre/5 pointer-events-none"></div>
+        </div>
+        <div class="reveal-scale gallery-card group cursor-pointer relative rounded-xl overflow-hidden" data-delay="5" style="box-shadow: 0 16px 48px rgba(0,0,0,0.3);">
+          <div class="aspect-[4/3]">
+            <img src="https://placehold.co/600x450/3A2A1A/6B6259?text=Отражение" alt="Отражение" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/70 via-deep/10 to-transparent"></div>
+            <div class="absolute inset-0 bg-sienna/8 mix-blend-multiply"></div>
+          </div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <p class="font-body text-[10px] tracking-[0.2em] uppercase text-ivory/40 mb-1">2020 · Графика, тушь</p>
+            <h3 class="font-display text-xl text-ivory font-medium">Отражение</h3>
+          </div>
+          <div class="card-overlay absolute inset-0 bg-ochre/5 pointer-events-none"></div>
         </div>
       </div>
 
-      <!-- More works row -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 mt-6 md:mt-8">
-        <div class="reveal gallery-item group cursor-pointer relative rounded-2xl overflow-hidden" data-delay="1" style="box-shadow: 0 16px 40px rgba(44,40,37,0.06), 0 4px 12px rgba(44,40,37,0.03);">
+      <!-- Bottom row — small -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-5 mt-5">
+        <div class="reveal gallery-card group cursor-pointer relative rounded-xl overflow-hidden" data-delay="1" style="box-shadow: 0 12px 32px rgba(0,0,0,0.3);">
           <div class="aspect-square">
-            <img src="https://placehold.co/500x500/E0D6CC/8B7E74?text=IV" alt="Работа 4" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-deep/50 via-transparent to-transparent"></div>
-            <div class="absolute inset-0 bg-accent/8 mix-blend-multiply"></div>
+            <img src="https://placehold.co/400x400/3D2E1F/6B6259?text=I" alt="Набросок I" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/60 to-transparent"></div>
+            <div class="absolute inset-0 bg-sienna/6 mix-blend-multiply"></div>
           </div>
-          <div class="overlay absolute bottom-0 left-0 right-0 p-5">
-            <h3 class="font-display text-lg text-cream font-medium">Эхо</h3>
+          <div class="absolute bottom-0 left-0 right-0 p-3">
+            <h3 class="font-display text-sm text-ivory/80">Набросок I</h3>
           </div>
         </div>
-        <div class="reveal gallery-item group cursor-pointer relative rounded-2xl overflow-hidden" data-delay="3" style="box-shadow: 0 16px 40px rgba(44,40,37,0.06), 0 4px 12px rgba(44,40,37,0.03);">
+        <div class="reveal gallery-card group cursor-pointer relative rounded-xl overflow-hidden" data-delay="2" style="box-shadow: 0 12px 32px rgba(0,0,0,0.3);">
           <div class="aspect-square">
-            <img src="https://placehold.co/500x500/D5CCC2/8B7E74?text=V" alt="Работа 5" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-deep/50 via-transparent to-transparent"></div>
-            <div class="absolute inset-0 bg-accent/8 mix-blend-multiply"></div>
+            <img src="https://placehold.co/400x400/2C1E14/6B6259?text=II" alt="Набросок II" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/60 to-transparent"></div>
+            <div class="absolute inset-0 bg-sienna/6 mix-blend-multiply"></div>
           </div>
-          <div class="overlay absolute bottom-0 left-0 right-0 p-5">
-            <h3 class="font-display text-lg text-cream font-medium">Форма тени</h3>
+          <div class="absolute bottom-0 left-0 right-0 p-3">
+            <h3 class="font-display text-sm text-ivory/80">Набросок II</h3>
           </div>
         </div>
-        <div class="reveal gallery-item group cursor-pointer relative rounded-2xl overflow-hidden" data-delay="5" style="box-shadow: 0 16px 40px rgba(44,40,37,0.06), 0 4px 12px rgba(44,40,37,0.03);">
+        <div class="reveal gallery-card group cursor-pointer relative rounded-xl overflow-hidden" data-delay="3" style="box-shadow: 0 12px 32px rgba(0,0,0,0.3);">
           <div class="aspect-square">
-            <img src="https://placehold.co/500x500/CBC2B8/8B7E74?text=VI" alt="Работа 6" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-deep/50 via-transparent to-transparent"></div>
-            <div class="absolute inset-0 bg-accent/8 mix-blend-multiply"></div>
+            <img src="https://placehold.co/400x400/352618/6B6259?text=III" alt="Набросок III" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/60 to-transparent"></div>
+            <div class="absolute inset-0 bg-sienna/6 mix-blend-multiply"></div>
           </div>
-          <div class="overlay absolute bottom-0 left-0 right-0 p-5">
-            <h3 class="font-display text-lg text-cream font-medium">Пространство</h3>
+          <div class="absolute bottom-0 left-0 right-0 p-3">
+            <h3 class="font-display text-sm text-ivory/80">Набросок III</h3>
+          </div>
+        </div>
+        <div class="reveal gallery-card group cursor-pointer relative rounded-xl overflow-hidden" data-delay="4" style="box-shadow: 0 12px 32px rgba(0,0,0,0.3);">
+          <div class="aspect-square">
+            <img src="https://placehold.co/400x400/2A1D12/6B6259?text=IV" alt="Набросок IV" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/60 to-transparent"></div>
+            <div class="absolute inset-0 bg-sienna/6 mix-blend-multiply"></div>
+          </div>
+          <div class="absolute bottom-0 left-0 right-0 p-3">
+            <h3 class="font-display text-sm text-ivory/80">Набросок IV</h3>
           </div>
         </div>
       </div>
@@ -317,45 +360,54 @@
   </section>
 
   <!-- About -->
-  <section id="about" class="py-24 md:py-32 bg-sand/40">
+  <section id="about" class="py-24 md:py-32 relative overflow-hidden">
+    <div class="blob w-[400px] h-[400px] top-0 right-0 opacity-5" style="background: radial-gradient(circle, #C6943D 0%, transparent 70%);"></div>
     <div class="max-w-7xl mx-auto px-6 md:px-12">
-      <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
-        <div class="reveal-left relative order-2 md:order-1">
-          <div class="aspect-[4/5] rounded-2xl overflow-hidden" style="box-shadow: 0 24px 48px rgba(44, 40, 37, 0.08), 0 8px 16px rgba(44, 40, 37, 0.04);">
-            <img src="https://placehold.co/600x750/E8E0D8/8B7E74?text=Artist+Portrait" alt="Yumi — портрет художника" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-deep/30 via-transparent to-transparent"></div>
-            <div class="absolute inset-0 bg-accent/5 mix-blend-multiply"></div>
+      <div class="grid md:grid-cols-5 gap-12 md:gap-16 items-center">
+        <!-- Portrait -->
+        <div class="reveal-left md:col-span-2 relative">
+          <div class="aspect-[4/5] rounded-xl overflow-hidden" style="box-shadow: 0 32px 64px rgba(0,0,0,0.4);">
+            <img src="https://placehold.co/500x625/3D2E1F/8B5E3C?text=Dikson" alt="Дмитрий Остапчук — портрет" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deep/40 via-transparent to-transparent"></div>
+            <div class="absolute inset-0 bg-sienna/8 mix-blend-multiply"></div>
           </div>
+          <div class="absolute -top-3 -left-3 w-16 h-16 border-t border-l border-ochre/20"></div>
+          <div class="absolute -bottom-3 -right-3 w-16 h-16 border-b border-r border-ochre/20"></div>
         </div>
-        <div class="order-1 md:order-2">
-          <p class="reveal-right font-body text-xs font-medium tracking-[0.25em] uppercase text-accent mb-4">Обо мне</p>
-          <h2 class="reveal-right font-display text-4xl md:text-5xl font-semibold text-charcoal mb-8" data-delay="1" style="letter-spacing: -0.03em;">
-            Каждая работа —<br>это диалог
+        <!-- Bio -->
+        <div class="md:col-span-3">
+          <p class="reveal-right font-body text-xs font-medium tracking-[0.3em] uppercase text-ochre mb-4">Обо мне</p>
+          <h2 class="reveal-right font-display text-4xl md:text-5xl font-bold text-ivory mb-8" data-delay="1" style="letter-spacing: -0.03em;">
+            Дмитрий Остапчук
           </h2>
-          <div class="reveal-right space-y-5" data-delay="2">
-            <p class="font-body text-base font-light text-warm" style="line-height: 1.7;">
-              Меня зовут Юми. Я художник, работающий на пересечении классической живописи и современного минимализма. Мои работы исследуют тишину, свет и пространство между вещами.
+
+          <!-- Quote block -->
+          <div class="reveal-right relative mb-8" data-delay="2">
+            <span class="quote-mark absolute -top-8 -left-2 text-ochre">«</span>
+            <blockquote class="font-display text-xl md:text-2xl italic text-ivory/70 pl-8 border-l-2 border-ochre/30" style="line-height: 1.5;">
+              Искусство — это путь от сердца к сердцу
+            </blockquote>
+          </div>
+
+          <div class="reveal-right space-y-4" data-delay="3">
+            <p class="font-body text-sm font-light text-ivory/50" style="line-height: 1.8;">
+              Дмитрий Остапчук — современный художник, работающий под творческим псевдонимом <strong class="text-ivory/70 font-medium">Dikson</strong>. Основные техники — масло, акварель, карандаш и тушь. Его работы исследуют темы пути, одиночества и внутреннего поиска.
             </p>
-            <p class="font-body text-base font-light text-warm" style="line-height: 1.7;">
-              За последние 10 лет мои работы были представлены в галереях Москвы, Токио и Берлина. Я верю, что настоящее искусство не кричит — оно шепчет.
+            <p class="font-body text-sm font-light text-ivory/50" style="line-height: 1.8;">
+              Выставки проходили в Беларуси и России. Серия «Странники» — центральный проект, который путешествовал по городам Витебской области и был представлен в Москве. Работы находятся в частных коллекциях.
             </p>
           </div>
 
-          <!-- Stats -->
-          <div class="reveal-right mt-12 pt-10 border-t border-warm/15" data-delay="3">
-            <div class="grid grid-cols-3 gap-8">
-              <div class="reveal" data-delay="4">
-                <p class="font-display text-3xl md:text-4xl font-semibold text-charcoal counter" data-target="10" data-suffix="+" style="letter-spacing: -0.03em;">0</p>
-                <p class="font-body text-xs tracking-wide text-warm mt-1">лет опыта</p>
-              </div>
-              <div class="reveal" data-delay="5">
-                <p class="font-display text-3xl md:text-4xl font-semibold text-charcoal counter" data-target="200" data-suffix="+" style="letter-spacing: -0.03em;">0</p>
-                <p class="font-body text-xs tracking-wide text-warm mt-1">работ</p>
-              </div>
-              <div class="reveal" data-delay="6">
-                <p class="font-display text-3xl md:text-4xl font-semibold text-charcoal counter" data-target="15" data-suffix="" style="letter-spacing: -0.03em;">0</p>
-                <p class="font-body text-xs tracking-wide text-warm mt-1">выставок</p>
-              </div>
+          <!-- Techniques -->
+          <div class="reveal-right mt-10" data-delay="4">
+            <div class="reveal-line h-px bg-ivory/10 mb-8"></div>
+            <p class="font-body text-[10px] tracking-[0.25em] uppercase text-smoke mb-4">Техники</p>
+            <div class="flex flex-wrap gap-3">
+              <span class="font-body text-xs text-ivory/60 border border-ivory/10 rounded-full px-4 py-2">Масло</span>
+              <span class="font-body text-xs text-ivory/60 border border-ivory/10 rounded-full px-4 py-2">Акварель</span>
+              <span class="font-body text-xs text-ivory/60 border border-ivory/10 rounded-full px-4 py-2">Карандаш</span>
+              <span class="font-body text-xs text-ivory/60 border border-ivory/10 rounded-full px-4 py-2">Тушь</span>
+              <span class="font-body text-xs text-ivory/60 border border-ivory/10 rounded-full px-4 py-2">Графика</span>
             </div>
           </div>
         </div>
@@ -363,52 +415,134 @@
     </div>
   </section>
 
-  <!-- Contact -->
-  <section id="contact" class="py-24 md:py-32">
-    <div class="max-w-3xl mx-auto px-6 md:px-12 text-center">
-      <div>
-        <p class="reveal font-body text-xs font-medium tracking-[0.25em] uppercase text-accent mb-4">Контакт</p>
-        <h2 class="reveal-scale font-display text-4xl md:text-5xl lg:text-6xl font-semibold text-charcoal mb-6" data-delay="1" style="letter-spacing: -0.03em;">
-          Давайте создадим<br>что-то вместе
-        </h2>
-        <div class="reveal-line h-px bg-warm/20 max-w-xs mx-auto mb-8" data-delay="2"></div>
-        <p class="reveal font-body text-base font-light text-warm max-w-lg mx-auto mb-10" data-delay="3" style="line-height: 1.7;">
-          Открыта для сотрудничества, заказов и выставочных проектов. Напишите мне, и я отвечу в течение дня.
-        </p>
-        <div class="reveal" data-delay="4">
-          <a href="mailto:hello@yumi-art.com" class="btn-primary inline-block bg-charcoal text-cream font-body text-sm font-medium px-10 py-4 rounded-full">
-            hello@yumi-art.com
-          </a>
+  <!-- Exhibitions -->
+  <section id="exhibitions" class="py-24 md:py-32 bg-umber/20">
+    <div class="max-w-7xl mx-auto px-6 md:px-12">
+      <div class="mb-16 md:mb-20">
+        <p class="reveal font-body text-xs font-medium tracking-[0.3em] uppercase text-ochre mb-4">История</p>
+        <h2 class="reveal font-display text-4xl md:text-5xl lg:text-6xl font-bold text-ivory" data-delay="1" style="letter-spacing: -0.03em;">Выставки</h2>
+        <div class="reveal-line h-px bg-ivory/10 mt-6" data-delay="2"></div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="relative">
+        <!-- Vertical line -->
+        <div class="hidden md:block absolute left-8 top-0 bottom-0 w-px bg-ivory/8"></div>
+
+        <!-- Exhibition 1 -->
+        <div class="reveal relative md:pl-24 mb-14" data-delay="1">
+          <div class="hidden md:flex absolute left-5 top-1 w-6 h-6 items-center justify-center">
+            <div class="w-3 h-3 rounded-full bg-ochre"></div>
+          </div>
+          <div class="bg-ivory/[0.03] border border-ivory/5 rounded-xl p-6 md:p-8 hover:border-ochre/15 transition-colors duration-300">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+              <h3 class="font-display text-xl md:text-2xl font-medium text-ivory">«Странники»</h3>
+              <span class="font-body text-xs tracking-wider text-ochre/80 bg-ochre/10 px-3 py-1 rounded-full w-fit">Москва · 2017</span>
+            </div>
+            <p class="font-body text-sm font-light text-ivory/45" style="line-height: 1.7;">
+              Персональная выставка «Дмитрий Остапчук (Dikson). Странники» в Москве. Серия работ, посвящённая теме внутреннего пути и поиска себя. Масло на холсте.
+            </p>
+          </div>
         </div>
 
-        <!-- Social links -->
-        <div class="reveal flex items-center justify-center gap-8 mt-14" data-delay="5">
-          <a href="#" class="font-body text-sm font-light text-warm hover:text-charcoal focus-visible:text-charcoal transition-colors duration-300 nav-link" aria-label="Instagram">Instagram</a>
-          <span class="w-1 h-1 rounded-full bg-warm/30"></span>
-          <a href="#" class="font-body text-sm font-light text-warm hover:text-charcoal focus-visible:text-charcoal transition-colors duration-300 nav-link" aria-label="Telegram">Telegram</a>
-          <span class="w-1 h-1 rounded-full bg-warm/30"></span>
-          <a href="#" class="font-body text-sm font-light text-warm hover:text-charcoal focus-visible:text-charcoal transition-colors duration-300 nav-link" aria-label="Behance">Behance</a>
+        <!-- Exhibition 2 -->
+        <div class="reveal relative md:pl-24 mb-14" data-delay="2">
+          <div class="hidden md:flex absolute left-5 top-1 w-6 h-6 items-center justify-center">
+            <div class="w-3 h-3 rounded-full bg-sienna"></div>
+          </div>
+          <div class="bg-ivory/[0.03] border border-ivory/5 rounded-xl p-6 md:p-8 hover:border-ochre/15 transition-colors duration-300">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+              <h3 class="font-display text-xl md:text-2xl font-medium text-ivory">«Странники» — Глубокое</h3>
+              <span class="font-body text-xs tracking-wider text-ochre/80 bg-ochre/10 px-3 py-1 rounded-full w-fit">Витебская обл. · 2017</span>
+            </div>
+            <p class="font-body text-sm font-light text-ivory/45" style="line-height: 1.7;">
+              Выставка продолжила путешествие по Беларуси. Город Глубокое, Витебская область. Серия «Странники» была дополнена новыми работами.
+            </p>
+          </div>
+        </div>
+
+        <!-- Exhibition 3 -->
+        <div class="reveal relative md:pl-24" data-delay="3">
+          <div class="hidden md:flex absolute left-5 top-1 w-6 h-6 items-center justify-center">
+            <div class="w-3 h-3 rounded-full bg-smoke"></div>
+          </div>
+          <div class="bg-ivory/[0.03] border border-ivory/5 rounded-xl p-6 md:p-8 hover:border-ochre/15 transition-colors duration-300">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+              <h3 class="font-display text-xl md:text-2xl font-medium text-ivory">Персональные и групповые выставки</h3>
+              <span class="font-body text-xs tracking-wider text-ochre/80 bg-ochre/10 px-3 py-1 rounded-full w-fit">Беларусь · 2015–2023</span>
+            </div>
+            <p class="font-body text-sm font-light text-ivory/45" style="line-height: 1.7;">
+              Участие в региональных и республиканских выставках. Работы представлены в частных коллекциях в Беларуси и за рубежом.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 pt-12 border-t border-ivory/8" data-delay="4">
+        <div class="text-center">
+          <p class="font-display text-3xl md:text-4xl font-bold text-ivory counter" data-target="10" data-suffix="+" style="letter-spacing: -0.03em;">0</p>
+          <p class="font-body text-xs tracking-wider text-smoke mt-1">лет в искусстве</p>
+        </div>
+        <div class="text-center">
+          <p class="font-display text-3xl md:text-4xl font-bold text-ivory counter" data-target="50" data-suffix="+" style="letter-spacing: -0.03em;">0</p>
+          <p class="font-body text-xs tracking-wider text-smoke mt-1">работ</p>
+        </div>
+        <div class="text-center">
+          <p class="font-display text-3xl md:text-4xl font-bold text-ivory counter" data-target="5" data-suffix="" style="letter-spacing: -0.03em;">0</p>
+          <p class="font-body text-xs tracking-wider text-smoke mt-1">выставок</p>
+        </div>
+        <div class="text-center">
+          <p class="font-display text-3xl md:text-4xl font-bold text-ivory counter" data-target="5" data-suffix="" style="letter-spacing: -0.03em;">0</p>
+          <p class="font-body text-xs tracking-wider text-smoke mt-1">техник</p>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Contact -->
+  <section id="contact" class="py-24 md:py-32 relative overflow-hidden">
+    <div class="blob w-[400px] h-[400px] bottom-0 left-1/3 opacity-5" style="background: radial-gradient(circle, #C6943D 0%, transparent 70%);"></div>
+    <div class="max-w-3xl mx-auto px-6 md:px-12 text-center">
+      <p class="reveal font-body text-xs font-medium tracking-[0.3em] uppercase text-ochre mb-4">Контакт</p>
+      <h2 class="reveal-scale font-display text-4xl md:text-5xl lg:text-6xl font-bold text-ivory mb-4" data-delay="1" style="letter-spacing: -0.03em;">
+        Свяжитесь<br>со мной
+      </h2>
+      <div class="reveal-line h-px bg-ochre/25 max-w-[120px] mx-auto mb-8" data-delay="2"></div>
+      <p class="reveal font-body text-sm font-light text-ivory/45 max-w-md mx-auto mb-12" data-delay="3" style="line-height: 1.7;">
+        Открыт для сотрудничества, заказов и выставочных проектов. Напишите мне в соцсетях или на почту.
+      </p>
+
+      <!-- Social links -->
+      <div class="reveal flex flex-col sm:flex-row items-center justify-center gap-4" data-delay="4">
+        <a href="https://vk.com/art_dikson" target="_blank" rel="noopener" class="btn inline-flex items-center gap-3 bg-ivory/[0.05] border border-ivory/10 text-ivory font-body text-sm font-medium px-7 py-3.5 rounded-full hover:border-ochre/30 hover:bg-ivory/[0.08]">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="opacity-70"><path d="M21.547 7h-3.29a.743.743 0 00-.655.392s-1.312 2.416-1.734 3.23C14.734 12.813 14 12.126 14 11.11V7.603A1.104 1.104 0 0012.896 6.5h-2.474a1.982 1.982 0 00-1.75.813s1.255-.204 1.255 1.49c0 .42.022 1.626.04 2.64a.73.73 0 01-1.272.503 21.54 21.54 0 01-2.498-4.543.693.693 0 00-.63-.403h-2.99a.508.508 0 00-.48.685C3.005 10.175 6.918 18 11.38 18h1.878a.742.742 0 00.742-.742v-1.135a.73.73 0 011.23-.53l2.247 2.112a1.09 1.09 0 00.746.295h2.953c1.424 0 1.424-.988.647-1.753-.546-.538-2.518-2.617-2.518-2.617a1.02 1.02 0 01-.078-1.323c.637-.84 1.68-2.212 2.122-2.8.603-.804 1.697-2.507.197-2.507z"/></svg>
+          ВКонтакте
+        </a>
+        <a href="https://www.instagram.com/art_dikson/" target="_blank" rel="noopener" class="btn inline-flex items-center gap-3 bg-ivory/[0.05] border border-ivory/10 text-ivory font-body text-sm font-medium px-7 py-3.5 rounded-full hover:border-ochre/30 hover:bg-ivory/[0.08]">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="opacity-70"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          Instagram
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
-  <footer class="py-8 border-t border-warm/10">
+  <footer class="py-8 border-t border-ivory/5">
     <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <a href="#" class="font-display text-xl font-semibold text-charcoal" style="letter-spacing: -0.03em;">Yumi<span class="text-accent">.</span>art</a>
-      <p class="font-body text-xs font-light text-warm/60">&copy; 2024 Yumi-Art. Все права защищены.</p>
+      <a href="#" class="font-display text-lg font-semibold text-ivory/60" style="letter-spacing: -0.02em;">
+        <span class="text-ochre">D</span>ikson
+      </a>
+      <p class="font-body text-[11px] font-light text-ivory/25">&copy; 2024 Дмитрий Остапчук. Все права защищены.</p>
     </div>
   </footer>
 
   <script>
-    // Reveal on scroll — all types
+    // Reveal on scroll
     const allReveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-line');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
+        if (entry.isIntersecting) entry.target.classList.add('visible');
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
     allReveals.forEach(el => observer.observe(el));
@@ -427,8 +561,7 @@
           function tick(now) {
             const elapsed = now - start;
             const progress = Math.min(elapsed / duration, 1);
-            const value = Math.round(easeOut(progress) * target);
-            entry.target.textContent = value + suffix;
+            entry.target.textContent = Math.round(easeOut(progress) * target) + suffix;
             if (progress < 1) requestAnimationFrame(tick);
           }
           requestAnimationFrame(tick);
@@ -444,19 +577,15 @@
     const bar2 = document.getElementById('bar2');
     const bar3 = document.getElementById('bar3');
     let menuOpen = false;
-
     menuBtn.addEventListener('click', () => {
       menuOpen = !menuOpen;
       if (menuOpen) {
-        mobileMenu.style.maxHeight = '250px';
+        mobileMenu.style.maxHeight = '300px';
         bar1.style.transform = 'rotate(45deg) translate(3px, 3px)';
         bar2.style.opacity = '0';
         bar3.style.transform = 'rotate(-45deg) translate(3px, -3px)';
-      } else {
-        closeMenu();
-      }
+      } else { closeMenu(); }
     });
-
     function closeMenu() {
       menuOpen = false;
       mobileMenu.style.maxHeight = '0px';
